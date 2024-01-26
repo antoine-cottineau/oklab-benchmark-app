@@ -58,6 +58,7 @@ class Benchmark {
    * @param {number} recordingExamples
    */
   benchmark(fn, warmupExamples, recordingExamples) {
+    console.log("Starting benchmark");
     this.__startWarmingUp();
     for (let i = 0; i < warmupExamples; i++) {
       this.__startExample();
@@ -69,8 +70,9 @@ class Benchmark {
       this.__startExample();
       fn();
     }
+    console.log("Finishing Benchmark");
 
-    return this.__getResults();
+    //return this.__getResults();
   }
 
   /**
@@ -88,7 +90,16 @@ class Benchmark {
   }
 
   __buildHistogram() {
-    return hdr.build({ numberOfSignificantValueDigits: 5 });
+    const histogram = hdr.build({
+      bitBucketSize: 32, // may be 8, 16, 32, 64 or 'packed'
+      autoResize: true, // default value is true
+      lowestDiscernibleValue: 1, // default value is also 1
+      highestTrackableValue: 100000, // can increase up to Number.MAX_SAFE_INTEGER
+      numberOfSignificantValueDigits: 3, // Number between 1 and 5 (inclusive)
+      useWebAssembly: false, // default value is false, see WebAssembly section for details });
+    });
+    console.log(histogram.estimatedFootprintInBytes);
+    return histogram;
   }
 
   /**
@@ -226,6 +237,8 @@ class Benchmark {
       results.push(flow.histogram.outputPercentileDistribution());
     }
 
+    console.log(results);
+
     return results.join("\n");
   }
 
@@ -240,24 +253,22 @@ class Benchmark {
     const interestingFlows = this.__getInterestingFlows();
 
     for (const flow of interestingFlows) {
+      console.log("Flow: " + flow.name + "-> building distribution");
       let percentileDistrtibution = flow.histogram.outputPercentileDistribution(
         5,
         DISPLAY_UNIT_FACTOR,
         // @ts-ignore
         true
       );
+      console.log("Flow: " + flow.name + "-> writing file");
       // // @ts-ignore
-      // const file = await FileSystem.StorageAccessFramework.createFileAsync(
-      //   // @ts-ignore
-      //   FileSystem.documentDirectory,
-      //   flow.name,
-      //   "csv"
-      // );
-
-      const file = FileSystem.documentDirectory + flow.name + ".csv";
-      await FileSystem.writeAsStringAsync(file, percentileDistrtibution, {
-        encoding: "utf8",
-      });
+      try {
+        const file = FileSystem.documentDirectory + flow.name + ".csv";
+        await FileSystem.writeAsStringAsync(file, percentileDistrtibution);
+      } catch (e) {
+        console.warn(e);
+      }
+      console.log("Flow: " + flow.name + "-> done");
     }
   }
 }

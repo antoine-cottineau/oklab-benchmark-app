@@ -2,7 +2,7 @@ global.TextEncoder = require("text-encoding").TextEncoder;
 
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 
 import * as FileSystem from "expo-file-system";
 
@@ -81,7 +81,7 @@ export default function App() {
 
     const RGB_MIN = 0;
     const RGB_MAX = 255;
-    const EXTRA_GAMMUT = 60;
+    const EXTRA_GAMMUT = 40;
 
     function randomColor() {
       return {
@@ -110,19 +110,20 @@ export default function App() {
       WARMUP_EXAMPLES,
       RECORDING_EXAMPLES
     );
+
     benchmark.saveResults();
   }, []);
 
-
   return (
     <View style={styles.container}>
-      <Pressable
+      <Button
         onPress={() => {
           runBenchmark();
         }}
+        title="Press me"
       >
         <Text>Open up App.js to start working on your app!</Text>
-      </Pressable>
+      </Button>
       <StatusBar style="auto" />
     </View>
   );
