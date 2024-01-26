@@ -1,6 +1,6 @@
 // @ts-check
 
-const fs = require("fs");
+//const fs = require("fs");
 
 const hdr = require("hdr-histogram-js");
 
@@ -220,7 +220,7 @@ class Benchmark {
    * @param {string} directory
    */
   saveResults(directory) {
-    invariant(this.__state !== "building", "Cannot save results while building");
+    /*invariant(this.__state !== "building", "Cannot save results while building");
 
     if (fs.existsSync(directory)) {
       fs.rmSync(directory, { recursive: true });
@@ -233,7 +233,7 @@ class Benchmark {
       // @ts-ignore
       let percentileDistrtibution = flow.histogram.outputPercentileDistribution(5, DISPLAY_UNIT_FACTOR, true);
       fs.writeFileSync(directory + "/" + flow.name + ".csv", percentileDistrtibution);
-    }
+    }*/
   }
 }
 
