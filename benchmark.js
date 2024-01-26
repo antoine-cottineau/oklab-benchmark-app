@@ -1,6 +1,7 @@
 // @ts-check
 
 //const fs = require("fs");
+import * as FileSystem from "expo-file-system";
 
 const hdr = require("hdr-histogram-js");
 
@@ -79,7 +80,10 @@ class Benchmark {
     if (this.__state === "empty") {
       this.__state = "building";
     }
-    invariant(this.__state === "building", "Cannot add mark while warming or recording");
+    invariant(
+      this.__state === "building",
+      "Cannot add mark while warming or recording"
+    );
     this.__marks.add(name);
   }
 
@@ -93,7 +97,10 @@ class Benchmark {
    * @param {string} endMark
    */
   addFlow(name, startMark, endMark) {
-    invariant(this.__state === "building", "Cannot add flow while warming or recording");
+    invariant(
+      this.__state === "building",
+      "Cannot add flow while warming or recording"
+    );
 
     if (!this.__marks.has(startMark)) {
       throw new Error(`Mark ${startMark} not found`);
@@ -103,7 +110,9 @@ class Benchmark {
     invariant(this.__marks.has(endMark), `Mark ${endMark} not found`);
 
     invariant(
-      this.__flows.find((f) => f.startMark === startMark && f.endMark === endMark) === undefined,
+      this.__flows.find(
+        (f) => f.startMark === startMark && f.endMark === endMark
+      ) === undefined,
       `Flow ${startMark} -> ${endMark} already exists`
     );
 
@@ -129,8 +138,13 @@ class Benchmark {
       connectedMarks.add(flow.endMark);
     }
 
-    const unconnectedMarks = [...this.__marks].filter((m) => !connectedMarks.has(m));
-    invariant(unconnectedMarks.length === 0, "Unconnected marks: " + unconnectedMarks.join(", "));
+    const unconnectedMarks = [...this.__marks].filter(
+      (m) => !connectedMarks.has(m)
+    );
+    invariant(
+      unconnectedMarks.length === 0,
+      "Unconnected marks: " + unconnectedMarks.join(", ")
+    );
   }
 
   __startRecording() {
@@ -145,7 +159,7 @@ class Benchmark {
   }
 
   __time() {
-    const [seconds, nanoseconds] = process.hrtime();
+    const [seconds, nanoseconds] = global.nativePerformanceNow();
     return seconds * 1000 + nanoseconds / 1000000;
   }
 
@@ -217,23 +231,33 @@ class Benchmark {
   }
 
   /**
-   * @param {string} directory
    */
-  saveResults(directory) {
-    /*invariant(this.__state !== "building", "Cannot save results while building");
-
-    if (fs.existsSync(directory)) {
-      fs.rmSync(directory, { recursive: true });
-    }
-    fs.mkdirSync(directory);
+  async saveResults() {
+    invariant(
+      this.__state !== "building",
+      "Cannot save results while building"
+    );
 
     const interestingFlows = this.__getInterestingFlows();
 
     for (const flow of interestingFlows) {
+      let percentileDistrtibution = flow.histogram.outputPercentileDistribution(
+        5,
+        DISPLAY_UNIT_FACTOR,
+        // @ts-ignore
+        true
+      );
       // @ts-ignore
-      let percentileDistrtibution = flow.histogram.outputPercentileDistribution(5, DISPLAY_UNIT_FACTOR, true);
-      fs.writeFileSync(directory + "/" + flow.name + ".csv", percentileDistrtibution);
-    }*/
+      const file = await FileSystem.StorageAccessFramework.createFileAsync(
+        // @ts-ignore
+        FileSystem.documentDirectory,
+        flow.name,
+        "csv"
+      );
+      await FileSystem.writeAsStringAsync(file, percentileDistrtibution, {
+        encoding: "utf8",
+      });
+    }
   }
 }
 

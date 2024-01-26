@@ -110,23 +110,15 @@ export default function App() {
       WARMUP_EXAMPLES,
       RECORDING_EXAMPLES
     );
-
-    const directory = "benchmark/data/interpolation/2";
-    // fs.mkdirSync(directory, { recursive: true });
-    benchmark.saveResults(directory);
+    benchmark.saveResults();
   }, []);
 
-  const testCreateFile = useCallback(() => {
-    const document = FileSystem.documentDirectory + "text.txt";
-    const path = FileSystem.StorageAccessFramework.createFileAsync(FileSystem.documentDirectory, "text", "txt")
-    FileSystem.writeAsStringAsync(path, "coucou");
-  });
 
   return (
     <View style={styles.container}>
       <Pressable
         onPress={() => {
-          testCreateFile();
+          runBenchmark();
         }}
       >
         <Text>Open up App.js to start working on your app!</Text>
