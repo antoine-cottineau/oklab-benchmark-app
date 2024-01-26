@@ -1,13 +1,16 @@
+global.TextEncoder = require("text-encoding").TextEncoder;
+
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import * as FileSystem from "expo-file-system";
+
 const { benchmark } = require("./benchmark");
 const { interpolateColor } = require("./interpolate");
-// import * as FileSystem from "expo-file-system"
 
 export default function App() {
-  // console.log(FileSystem.documentDirectory);
+  console.log(FileSystem.documentDirectory);
 
   useEffect(() => {
     benchmark.addMark("Calibration (start)");
@@ -112,6 +115,11 @@ export default function App() {
     // fs.mkdirSync(directory, { recursive: true });
     benchmark.saveResults(directory);
   }, []);
+
+  const testCreateFile = useCallback(() => {
+    const document = FileSystem.documentDirectory;
+    FileSystem.crea;
+  });
 
   return (
     <View style={styles.container}>
