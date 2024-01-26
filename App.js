@@ -117,15 +117,15 @@ export default function App() {
   }, []);
 
   const testCreateFile = useCallback(() => {
-    const document = FileSystem.documentDirectory;
-    FileSystem.crea;
+    const document = FileSystem.documentDirectory + "text.txt";
+    FileSystem.writeAsStringAsync(document, "coucou");
   });
 
   return (
     <View style={styles.container}>
       <Pressable
         onPress={() => {
-          runBenchmark();
+          testCreateFile();
         }}
       >
         <Text>Open up App.js to start working on your app!</Text>
