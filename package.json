@@ -11,6 +11,7 @@
   "dependencies": {
     "expo": "~50.0.3",
     "expo-status-bar": "~1.11.1",
+    "hdr-histogram-js": "^3.0.0",
     "react": "18.2.0",
     "react-native": "0.73.2"
   },
