@@ -118,7 +118,8 @@ export default function App() {
 
   const testCreateFile = useCallback(() => {
     const document = FileSystem.documentDirectory + "text.txt";
-    FileSystem.writeAsStringAsync(document, "coucou");
+    const path = FileSystem.StorageAccessFramework.createFileAsync(FileSystem.documentDirectory, "text", "txt")
+    FileSystem.writeAsStringAsync(path, "coucou");
   });
 
   return (
