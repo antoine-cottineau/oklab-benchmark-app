@@ -9,8 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~50.0.3",
+    "expo": "^50",
     "expo-file-system": "~16.0.5",
+    "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "hdr-histogram-js": "^3.0.0",
     "react": "18.2.0",

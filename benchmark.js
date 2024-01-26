@@ -159,8 +159,7 @@ class Benchmark {
   }
 
   __time() {
-    const [seconds, nanoseconds] = global.nativePerformanceNow();
-    return seconds * 1000 + nanoseconds / 1000000;
+    return global.performance.now();
   }
 
   /**
@@ -247,13 +246,15 @@ class Benchmark {
         // @ts-ignore
         true
       );
-      // @ts-ignore
-      const file = await FileSystem.StorageAccessFramework.createFileAsync(
-        // @ts-ignore
-        FileSystem.documentDirectory,
-        flow.name,
-        "csv"
-      );
+      // // @ts-ignore
+      // const file = await FileSystem.StorageAccessFramework.createFileAsync(
+      //   // @ts-ignore
+      //   FileSystem.documentDirectory,
+      //   flow.name,
+      //   "csv"
+      // );
+
+      const file = FileSystem.documentDirectory + flow.name + ".csv";
       await FileSystem.writeAsStringAsync(file, percentileDistrtibution, {
         encoding: "utf8",
       });
